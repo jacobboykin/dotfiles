@@ -1,0 +1,16 @@
+{
+    "window.zoomLevel": 1,
+    "workbench.colorTheme": "Nord",
+    "todo-tree.tree.showScanModeButton": false,
+    "terminal.integrated.fontFamily": "MesloLGS NF",
+    "workbench.colorCustomizations": {},
+    "workbench.iconTheme": "eq-material-theme-icons-ocean",
+    "go.formatTool": "gofmt",
+    "go.useLanguageServer": true,
+    "git.autofetch": true,
+    "editor.rulers": [
+        80,
+        120,
+    ],
+    "editor.fontLigatures": null
+}

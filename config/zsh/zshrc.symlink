@@ -1,0 +1,78 @@
+# Go config
+export GOPATH=${HOME}/go
+export GOBIN=${GOPATH}/bin
+
+# Python config
+export PYBIN=${HOME}/Library/Python/2.7/bin
+
+# linkerd cli
+export LINKERD=${HOME}/.linkerd2/bin
+
+# gloo cli
+export GLOOCLI=${HOME}/.gloo/bin
+
+# psql cli
+export PSQL=/usr/local/opt/libpq/bin
+
+# Setup PATH
+export PATH=$HOME/bin:/usr/local/bin:$PYBIN:$GOBIN:$LINKERD:$GLOOCLI:$PSQL:$PATH
+
+# Path to oh-my-zsh installation
+export ZSH="/Users/jboykin/.oh-my-zsh"
+
+# Import private config (sensative env vars, aliases, etc.)
+source ~/.zshrc-secret
+
+# Setup chruby
+source /usr/local/opt/chruby/share/chruby/chruby.sh
+
+# Gpg setup
+export GPG_TTY=$(tty)
+
+# KUBECONFIG dynamic config loading
+export KUBECONFIG=$(find ~/.kube -name "config*" -print0 | tr '\000' ':')
+
+# ZSH theme
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Use case-sensitive completion.
+CASE_SENSITIVE="true"
+
+# Plugins
+plugins=(
+    osx
+    docker
+    terraform
+    git
+    z
+    colored-man-pages
+    aws
+    zsh-autosuggestions
+    zsh-syntax-highlighting
+    kubectl
+    golang
+    helm
+    osx
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# powerlevel10k config
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# fzf config
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# vault auto completion
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/vault vault
+
+# bash tldr auto completion
+complete -W "$(tldr 2>/dev/null --list)" tldr
+
+# Aliases
+alias g="git"
+alias k="kubectl"
+
+# direnv
+eval "$(direnv hook zsh)"
