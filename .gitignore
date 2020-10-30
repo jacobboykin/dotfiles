@@ -1,0 +1,5 @@
+# ignore files with sensative info
+*-secret.symlink
+
+# macos
+.DS_Store

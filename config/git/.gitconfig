@@ -1,0 +1,36 @@
+[credential]
+	helper = osxkeychain
+
+[commit]
+	gpgsign = true
+	template = /Users/$USER/.git-commit-template
+
+[alias]
+    aa = add --all
+    tree = log --graph --decorate --pretty=oneline --abbrev-commit
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    co = checkout
+    review = push origin head --force-with-lease
+    mkbr = checkout -b
+    lsbr = branch --list
+    delbr = branch -d
+    fdelbr = branch -D
+    fall = fetch --all
+    cs = commit -s
+    amend = commit --amend
+
+[core]
+    trustctime = false
+    editor = code --wait
+
+[diff]
+    tool = default-difftool
+
+[difftool "default-difftool"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
