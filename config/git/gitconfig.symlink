@@ -3,7 +3,7 @@
 
 [commit]
 	gpgsign = true
-	template = /Users/$USER/.git-commit-template
+	template = /Users/jboykin/.git-commit-template
 
 [alias]
     aa = add --all
@@ -34,3 +34,7 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[gpg]
+	program = gpg
+[user]
+	signingkey = 230C678FFD140853

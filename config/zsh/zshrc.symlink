@@ -23,9 +23,6 @@ export ZSH="/Users/jboykin/.oh-my-zsh"
 # Import private config (sensative env vars, aliases, etc.)
 source ~/.zshrc-secret
 
-# Setup chruby
-source /usr/local/opt/chruby/share/chruby/chruby.sh
-
 # Gpg setup
 export GPG_TTY=$(tty)
 

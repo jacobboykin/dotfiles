@@ -1,10 +1,10 @@
 {
     "window.zoomLevel": 1,
-    "workbench.colorTheme": "Nord",
+    "workbench.colorTheme": "Horizon",
     "todo-tree.tree.showScanModeButton": false,
     "terminal.integrated.fontFamily": "MesloLGS NF",
     "workbench.colorCustomizations": {},
-    "workbench.iconTheme": "eq-material-theme-icons-ocean",
+    "workbench.iconTheme": "eq-material-theme-icons-darker",
     "go.formatTool": "gofmt",
     "go.useLanguageServer": true,
     "git.autofetch": true,
@@ -12,5 +12,6 @@
         80,
         120,
     ],
-    "editor.fontLigatures": null
+    "editor.fontLigatures": null,
+    "editor.tabSize": 2
 }
