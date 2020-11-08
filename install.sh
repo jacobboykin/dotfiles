@@ -75,20 +75,6 @@ function setup_symlinks() {
       mkdir -p $HOME/.config
   fi
 
-  # for config in $INSTALLDIR/config/*; do
-  #   target=$HOME/.config/$( basename $config )
-  #   if [ -e $target ]; then
-  #     echo "---------------------------------------------------------"
-  #     echo "$(tput setaf 3)JARVIS: ~${target#$HOME} already exists... Skipping.$(tput sgr 0)"
-  #     echo "---------------------------------------------------------"
-  #   else
-  #     echo "---------------------------------------------------------"
-  #     echo "$(tput setaf 2)JARVIS: Creating symlink for ${config}.$(tput sgr 0)"
-  #     echo "---------------------------------------------------------"
-  #     ln -s $config $target
-  #   fi
-  # done
-
   echo '✨ >>> Successfully setup symlnks'
 }
 
