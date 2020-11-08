@@ -38,3 +38,5 @@
 	program = gpg
 [user]
 	signingkey = 230C678FFD140853
+	name = Jacob Boykin
+	email = boykinmusic@gmail.com
