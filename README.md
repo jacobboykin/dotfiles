@@ -3,7 +3,7 @@
 
 ## Install
 
-Install all the things:
+Install all the things (macos)
 ```sh
 ./install.sh
 ```
