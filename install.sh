@@ -35,7 +35,7 @@ function install_brew_packages() {
   echo '⏳ >>> Installing brew cask packages'
   for i in "${brew_cask_packages[@]}"
   do
-      brew cask install $i
+      brew install --cask $i
   done
 
   echo '✨ >>> Successfully setup brew packages'
