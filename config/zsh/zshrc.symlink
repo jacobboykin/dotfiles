@@ -18,10 +18,10 @@ export PSQL=/usr/local/opt/libpq/bin
 export PATH=$HOME/bin:/usr/local/bin:$PYBIN:$GOBIN:$LINKERD:$GLOOCLI:$PSQL:$PATH
 
 # Path to oh-my-zsh installation
-export ZSH="/Users/jboykin/.oh-my-zsh"
+export ZSH="/Users/jacob/.oh-my-zsh"
 
 # Import private config (sensative env vars, aliases, etc.)
-source ~/.zshrc-secret
+# source ~/.zshrc-secret
 
 # Gpg setup
 export GPG_TTY=$(tty)
@@ -37,7 +37,7 @@ CASE_SENSITIVE="true"
 
 # Plugins
 plugins=(
-    osx
+    macos
     docker
     terraform
     git
@@ -49,7 +49,6 @@ plugins=(
     kubectl
     golang
     helm
-    osx
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -73,3 +72,7 @@ alias k="kubectl"
 
 # direnv
 eval "$(direnv hook zsh)"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/jacob/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
