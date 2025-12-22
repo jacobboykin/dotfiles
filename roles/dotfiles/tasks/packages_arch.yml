@@ -131,6 +131,7 @@
       - jetbrains-toolbox
       - 1password
       - ghostty-bin
+      - ttf-firacode-nerd
     state: present
   become: no
   ignore_errors: yes  # Some GUI apps might not be needed on all systems
