@@ -19,9 +19,8 @@ fi
 echo "⏳ >>> Installing Ansible collections..."
 ansible-galaxy collection install -r requirements.yml
 
-# Run the playbook
-echo "⏳ >>> Running Ansible playbook..."
-ansible-playbook -i localhost, -c local bootstrap.yml "$@"
+# Run the dotfiles playbook
+echo "⏳ >>> Setting up dotfiles and zsh..."
+ansible-playbook -i localhost, -c local dotfiles.yml "$@"
 
-echo "✨ >>> Done!"
-
+echo "✨ >>> Dotfiles setup complete!"

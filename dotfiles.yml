@@ -1,0 +1,74 @@
+---
+- name: Setup dotfiles
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  become: no
+  vars:
+    dotfiles_dir: "{{ playbook_dir }}"
+    home_dir: "{{ ansible_facts.env.HOME }}"
+
+  pre_tasks:
+    - name: Check if secrets file exists
+      stat:
+        path: "{{ playbook_dir }}/vars/secrets.yml"
+      register: secrets_file
+
+    - name: Fail if secrets file missing
+      fail:
+        msg: |
+          ⚠️  vars/secrets.yml not found!
+          Copy vars/secrets.yml.example to vars/secrets.yml and fill in your values.
+      when: not secrets_file.stat.exists
+
+    - name: Load secrets
+      include_vars:
+        file: "{{ playbook_dir }}/vars/secrets.yml"
+      no_log: true
+
+    - name: Check if username matches system user
+      fail:
+        msg: |
+          ⚠️  Username mismatch!
+          vars/secrets.yml has username='{{ username }}' but your system username is '{{ ansible_facts.env.USER }}'.
+          Update the 'username' field in vars/secrets.yml to match your system username.
+      when: username != ansible_facts.env.USER
+
+  tasks:
+    - name: Install essential tools for dotfiles
+      block:
+        - name: Check if Homebrew is installed
+          command: which brew
+          register: brew_check
+          changed_when: false
+          failed_when: false
+
+        - name: Fail if Homebrew is not installed
+          fail:
+            msg: |
+              ⚠️  Homebrew is not installed!
+              Install Homebrew first:
+                /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          when: brew_check.rc != 0
+
+        - name: Install essential tools via Homebrew
+          community.general.homebrew:
+            name:
+              - starship
+              - zoxide
+              - atuin
+              - eza
+            state: present
+          become: no
+
+        - name: Install mise via install script
+          include_tasks: roles/dotfiles/tasks/tool_installers.yml
+
+    - name: Process template files
+      include_tasks: roles/dotfiles/tasks/templates.yml
+
+    - name: Setup zsh plugins
+      include_tasks: roles/dotfiles/tasks/zsh.yml
+
+    - name: Setup symlinks
+      include_tasks: roles/dotfiles/tasks/symlinks.yml

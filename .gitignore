@@ -5,6 +5,8 @@ vars/secrets.yml
 # rendered templates with sensitive data (generated from .j2 files)
 config/git/gitconfig.symlink
 config/zsh/env.symlink
+config/zsh/zshrc.symlink
+config/iterm/profile.json
 
 # macos
 .DS_Store

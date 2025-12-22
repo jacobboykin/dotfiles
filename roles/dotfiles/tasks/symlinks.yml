@@ -13,6 +13,13 @@
     mode: '0755'
   become: no
 
+- name: Create .gnupg directory
+  file:
+    path: "{{ home_dir }}/.gnupg"
+    state: directory
+    mode: '0700'
+  become: no
+
 - name: Find all .symlink files
   find:
     paths: "{{ dotfiles_dir }}"
@@ -29,6 +36,8 @@
         {{ home_dir }}/.config/{{ filename }}
       {%- elif filename == 'env' and item.path | dirname | basename == 'zsh' -%}
         {{ home_dir }}/.zsh/{{ filename }}
+      {%- elif item.path | dirname | basename == 'gnupg' -%}
+        {{ home_dir }}/.gnupg/{{ filename }}
       {%- else -%}
         {{ home_dir }}/.{{ filename }}
       {%- endif -%}
@@ -46,17 +55,21 @@
         {{ home_dir }}/.config/{{ filename }}
       {%- elif filename == 'env' and item.item.path | dirname | basename == 'zsh' -%}
         {{ home_dir }}/.zsh/{{ filename }}
+      {%- elif item.item.path | dirname | basename == 'gnupg' -%}
+        {{ home_dir }}/.gnupg/{{ filename }}
       {%- else -%}
         {{ home_dir }}/.{{ filename }}
       {%- endif -%}
     dest: >-
       {%- set filename = item.item.path | basename | regex_replace('\\.symlink$', '') -%}
       {%- if filename == 'starship.toml' -%}
-        {{ home_dir }}/.config/{{ filename }}.backup-{{ ansible_date_time.epoch }}
+        {{ home_dir }}/.config/{{ filename }}.backup-{{ lookup('pipe', 'date +%s') }}
       {%- elif filename == 'env' and item.item.path | dirname | basename == 'zsh' -%}
-        {{ home_dir }}/.zsh/{{ filename }}.backup-{{ ansible_date_time.epoch }}
+        {{ home_dir }}/.zsh/{{ filename }}.backup-{{ lookup('pipe', 'date +%s') }}
+      {%- elif item.item.path | dirname | basename == 'gnupg' -%}
+        {{ home_dir }}/.gnupg/{{ filename }}.backup-{{ lookup('pipe', 'date +%s') }}
       {%- else -%}
-        {{ home_dir }}/.{{ filename }}.backup-{{ ansible_date_time.epoch }}
+        {{ home_dir }}/.{{ filename }}.backup-{{ lookup('pipe', 'date +%s') }}
       {%- endif -%}
     remote_src: yes
   when:
@@ -76,6 +89,8 @@
         {{ home_dir }}/.config/{{ filename }}
       {%- elif filename == 'env' and item.path | dirname | basename == 'zsh' -%}
         {{ home_dir }}/.zsh/{{ filename }}
+      {%- elif item.path | dirname | basename == 'gnupg' -%}
+        {{ home_dir }}/.gnupg/{{ filename }}
       {%- else -%}
         {{ home_dir }}/.{{ filename }}
       {%- endif -%}

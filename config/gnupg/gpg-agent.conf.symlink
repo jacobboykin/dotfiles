@@ -1,0 +1,7 @@
+# Use pinentry-mac for GUI password entry on macOS
+pinentry-program /opt/homebrew/bin/pinentry-mac
+
+# Cache settings
+default-cache-ttl 600
+max-cache-ttl 7200
+

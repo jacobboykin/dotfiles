@@ -2,4 +2,6 @@
 
 Personal dotfiles and software for macOS, managed with Ansible.
 
-Run `./bootstrap` to configure or update your system with these dotfiles and software.
+- `./ensure-all` - Install everything (software + dotfiles)
+- `./ensure-software` - Install only software packages
+- `./ensure-dotfiles` - Install only dotfiles configuration
