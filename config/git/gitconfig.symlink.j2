@@ -5,9 +5,6 @@
 	st = status
 	sync = "!b=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); git pull --rebase origin $b"
 
-[init]
-	defaultBranch = master
-
 [pull]
   # rebase instead of merge
 	rebase = true

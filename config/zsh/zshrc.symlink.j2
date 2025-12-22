@@ -1,7 +1,7 @@
 # Zsh configuration file =================================================
 
 # Docker CLI completions need to be in fpath before compinit
-fpath=(/Users/jacob/.docker/completions $fpath)
+fpath=(/Users/{{ username }}/.docker/completions $fpath)
 
 # Initialize zsh's completion system
 autoload -Uz compinit
@@ -87,4 +87,4 @@ eval "$(atuin init zsh)"
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # mise
-eval "$(/Users/jacob/.local/bin/mise activate zsh)"
+eval "$(/Users/{{ username }}/.local/bin/mise activate zsh)"
