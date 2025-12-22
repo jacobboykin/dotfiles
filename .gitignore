@@ -1,8 +1,17 @@
-# ignore files with sensative info
+# ignore files with sensitive info
 *-secret.symlink
+vars/secrets.yml
+
+# rendered templates with sensitive data (generated from .j2 files)
+config/git/gitconfig.symlink
+config/zsh/env.symlink
 
 # macos
 .DS_Store
 
 # goland
 .idea
+
+# ansible logs
+*.retry
+out.log

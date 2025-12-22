@@ -1,9 +1,5 @@
 # dotfiles
-✨ I'm Lazy ✨
 
-## Install
+Personal dotfiles and software for macOS, managed with Ansible.
 
-Install all the things (macos)
-```sh
-./install.sh
-```
+Run `./bootstrap` to configure or update your system with these dotfiles and software.

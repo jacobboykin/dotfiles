@@ -1,0 +1,38 @@
+---
+- name: Check if Homebrew is installed
+  command: which brew
+  register: brew_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Homebrew
+  shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  when: brew_check.rc != 0
+  environment:
+    NONINTERACTIVE: 1
+
+- name: Ensure Homebrew is in PATH
+  set_fact:
+    homebrew_path: "{{ ansible_facts.env.HOME }}/homebrew/bin:/opt/homebrew/bin:{{ ansible_facts.env.PATH }}"
+  when: brew_check.rc != 0
+
+- name: Install Homebrew packages from Brewfile (this may take a while...)
+  shell: brew bundle --file="{{ dotfiles_dir }}/Brewfile" --verbose
+  environment:
+    PATH: "{{ homebrew_path | default(ansible_facts.env.PATH) }}"
+  register: brew_bundle_result
+  changed_when: "'Installing' in brew_bundle_result.stdout or 'Upgrading' in brew_bundle_result.stdout"
+  failed_when: brew_bundle_result.rc != 0 and 'failed to install' not in brew_bundle_result.stderr
+  become: no
+
+- name: Show brew bundle summary
+  debug:
+    msg: |
+      Brew bundle completed!
+      {% if 'Installing' in brew_bundle_result.stdout or 'Upgrading' in brew_bundle_result.stdout %}
+      ✅ New packages were installed or upgraded
+      {% else %}
+      ✅ All packages already up to date
+      {% endif %}
+  when: brew_bundle_result.rc == 0
+

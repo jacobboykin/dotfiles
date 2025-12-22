@@ -1,0 +1,20 @@
+---
+# Install tools that have their own installation scripts
+# These tools are often installed via curl/wget scripts from their websites
+
+- name: Check if mise is installed
+  command: which mise
+  register: mise_check
+  changed_when: false
+  failed_when: false
+  become: no
+
+- name: Install mise via install script
+  become: no
+  shell: |
+    curl https://mise.run | sh
+  args:
+    creates: "{{ ansible_facts.env.HOME }}/.local/bin/mise"
+  when: mise_check.rc != 0
+  environment:
+    PATH: "{{ ansible_facts.env.PATH }}"

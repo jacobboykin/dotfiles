@@ -1,0 +1,32 @@
+---
+- name: Bootstrap dotfiles
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  become: no
+  vars:
+    dotfiles_dir: "{{ playbook_dir }}"
+    home_dir: "{{ ansible_facts.env.HOME }}"
+
+  pre_tasks:
+    - name: Check if secrets file exists
+      stat:
+        path: "{{ playbook_dir }}/vars/secrets.yml"
+      register: secrets_file
+
+    - name: Load secrets if available
+      include_vars:
+        file: "{{ playbook_dir }}/vars/secrets.yml"
+      when: secrets_file.stat.exists
+      no_log: true
+
+    - name: Warn if secrets file missing
+      debug:
+        msg: |
+          ⚠️  vars/secrets.yml not found!
+          Copy vars/secrets.yml.example to vars/secrets.yml and fill in your values.
+          Git config will have empty user info until secrets are configured.
+      when: not secrets_file.stat.exists
+
+  roles:
+    - dotfiles

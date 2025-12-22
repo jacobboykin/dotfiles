@@ -1,0 +1,89 @@
+---
+- name: Create .config directory
+  file:
+    path: "{{ home_dir }}/.config"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Create .zsh directory
+  file:
+    path: "{{ home_dir }}/.zsh"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Find all .symlink files
+  find:
+    paths: "{{ dotfiles_dir }}"
+    patterns: "*.symlink"
+    recurse: yes
+  register: symlink_files
+  become: no
+
+- name: Check if config files already exist
+  stat:
+    path: >-
+      {%- set filename = item.path | basename | regex_replace('\\.symlink$', '') -%}
+      {%- if filename == 'starship.toml' -%}
+        {{ home_dir }}/.config/{{ filename }}
+      {%- elif filename == 'env' and item.path | dirname | basename == 'zsh' -%}
+        {{ home_dir }}/.zsh/{{ filename }}
+      {%- else -%}
+        {{ home_dir }}/.{{ filename }}
+      {%- endif -%}
+  register: existing_config
+  loop: "{{ symlink_files.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+  become: no
+
+- name: Backup existing file (if not already a symlink)
+  copy:
+    src: >-
+      {%- set filename = item.item.path | basename | regex_replace('\\.symlink$', '') -%}
+      {%- if filename == 'starship.toml' -%}
+        {{ home_dir }}/.config/{{ filename }}
+      {%- elif filename == 'env' and item.item.path | dirname | basename == 'zsh' -%}
+        {{ home_dir }}/.zsh/{{ filename }}
+      {%- else -%}
+        {{ home_dir }}/.{{ filename }}
+      {%- endif -%}
+    dest: >-
+      {%- set filename = item.item.path | basename | regex_replace('\\.symlink$', '') -%}
+      {%- if filename == 'starship.toml' -%}
+        {{ home_dir }}/.config/{{ filename }}.backup-{{ ansible_date_time.epoch }}
+      {%- elif filename == 'env' and item.item.path | dirname | basename == 'zsh' -%}
+        {{ home_dir }}/.zsh/{{ filename }}.backup-{{ ansible_date_time.epoch }}
+      {%- else -%}
+        {{ home_dir }}/.{{ filename }}.backup-{{ ansible_date_time.epoch }}
+      {%- endif -%}
+    remote_src: yes
+  when:
+    - item.stat.exists | default(false)
+    - not item.stat.islnk | default(true)
+  loop: "{{ existing_config.results }}"
+  loop_control:
+    label: "{{ item.item.path | basename }}"
+  become: no
+
+- name: Create symlink
+  file:
+    src: "{{ item.path }}"
+    dest: >-
+      {%- set filename = item.path | basename | regex_replace('\\.symlink$', '') -%}
+      {%- if filename == 'starship.toml' -%}
+        {{ home_dir }}/.config/{{ filename }}
+      {%- elif filename == 'env' and item.path | dirname | basename == 'zsh' -%}
+        {{ home_dir }}/.zsh/{{ filename }}
+      {%- else -%}
+        {{ home_dir }}/.{{ filename }}
+      {%- endif -%}
+    state: link
+    force: yes
+  loop: "{{ symlink_files.files }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+  become: no
+
+

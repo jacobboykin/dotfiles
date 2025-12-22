@@ -1,0 +1,60 @@
+[alias]
+	co = checkout
+	br = branch
+	ci = commit -s
+	st = status
+	sync = "!b=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); git pull --rebase origin $b"
+
+[init]
+	defaultBranch = master
+
+[pull]
+  # rebase instead of merge
+	rebase = true
+
+[push]
+  # set upstream branch automatically
+	autoSetupRemote = true
+
+[diff]
+  # Better diff output
+	algorithm = histogram
+
+	# Visual enhancements
+	colorMoved = plain
+	mnemonicPrefix = true
+
+[commit]
+  # include diff in commit message template
+	verbose = true
+
+  # sign commits by default
+	gpgsign = true
+
+[column]
+  # Automatic column output
+	ui = auto
+
+[branch]
+  # sort branches by most recent commit
+	sort = -committerdate
+
+[tag]
+  # sort tags by version number
+	sort = -version:refname
+
+[rerere]
+  # Reuse recorded resolutions
+	enabled = true
+
+	# apply recorded resolutions automatically
+	autoupdate = true
+
+[user]
+	name = {{ git_user_name | default(ansible_facts.env.GIT_USER_NAME | default('')) }}
+	email = {{ git_user_email | default(ansible_facts.env.GIT_USER_EMAIL | default('')) }}
+	signingkey = {{ git_signing_key | default(ansible_facts.env.GIT_SIGNING_KEY | default('')) }}
+
+[gpg]
+	program = gpg
+

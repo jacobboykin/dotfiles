@@ -1,0 +1,34 @@
+---
+- name: Create .zsh directory
+  file:
+    path: "{{ home_dir }}/.zsh"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Check if zsh-autosuggestions exists
+  stat:
+    path: "{{ home_dir }}/.zsh/zsh-autosuggestions"
+  register: zsh_autosuggestions_check
+
+- name: Install zsh-autosuggestions
+  become: no
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: "{{ home_dir }}/.zsh/zsh-autosuggestions"
+    version: master
+  when: not zsh_autosuggestions_check.stat.exists
+
+- name: Check if zsh-syntax-highlighting exists
+  stat:
+    path: "{{ home_dir }}/.zsh/zsh-syntax-highlighting"
+  register: zsh_syntax_highlighting_check
+
+- name: Install zsh-syntax-highlighting
+  become: no
+  git:
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting
+    dest: "{{ home_dir }}/.zsh/zsh-syntax-highlighting"
+    version: master
+  when: not zsh_syntax_highlighting_check.stat.exists
+

@@ -1,0 +1,24 @@
+---
+- name: Include macOS package tasks
+  include_tasks: packages_darwin.yml
+  when: ansible_facts['os_family'] == 'Darwin'
+
+- name: Install Mac App Store applications
+  include_tasks: mas.yml
+  when: ansible_facts['os_family'] == 'Darwin'
+
+- name: Install tools with custom installers
+  include_tasks: tool_installers.yml
+
+- name: Process template files
+  include_tasks: templates.yml
+
+- name: Setup zsh plugins
+  include_tasks: zsh.yml
+
+- name: Setup symlinks
+  include_tasks: symlinks.yml
+
+- name: Install Go packages
+  include_tasks: go_packages.yml
+

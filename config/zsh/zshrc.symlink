@@ -1,78 +1,90 @@
-# Go config
-export GOPATH=${HOME}/go
-export GOBIN=${GOPATH}/bin
+# Zsh configuration file =================================================
 
-# Python config
-export PYBIN=${HOME}/Library/Python/2.7/bin
+# Docker CLI completions need to be in fpath before compinit
+fpath=(/Users/jacob/.docker/completions $fpath)
 
-# linkerd cli
-export LINKERD=${HOME}/.linkerd2/bin
+# Initialize zsh's completion system
+autoload -Uz compinit
+compinit
 
-# gloo cli
-export GLOOCLI=${HOME}/.gloo/bin
+# Use emacs-style keybindings (Meta-f / Meta-b, etc.)
+bindkey -e
 
-# psql cli
-export PSQL=/usr/local/opt/libpq/bin
+# Natural word movement in the shell
+WORDCHARS=''
 
-# Setup PATH
-export PATH=$HOME/bin:/usr/local/bin:$PYBIN:$GOBIN:$LINKERD:$GLOOCLI:$PSQL:$PATH
+# Secrets and environment variables ======================================
 
-# Path to oh-my-zsh installation
-export ZSH="/Users/jacob/.oh-my-zsh"
+# Environment variables
+source ~/.zsh/env
 
-# Import private config (sensative env vars, aliases, etc.)
-# source ~/.zshrc-secret
+# Secrets
+if [ -f ~/.zsh/secrets ]; then
+  source ~/.zsh/secrets
+fi
 
-# Gpg setup
-export GPG_TTY=$(tty)
+# Aliases and functions ==================================================
 
-# KUBECONFIG dynamic config loading
-export KUBECONFIG=$(find ~/.kube -name "config*" -print0 | tr '\000' ':')
+# File system
+if command -v eza &> /dev/null; then
+  alias l='eza -lh --group-directories-first --icons=auto'
+  alias ls='eza -lh --group-directories-first --icons=auto'
+  alias lsa='ls -a'
+  alias lt='eza --tree --level=2 --long --icons --git'
+  alias lta='lt -a'
+fi
 
-# ZSH theme
-ZSH_THEME="powerlevel10k/powerlevel10k"
+# Directories / zoxide wrapper
+if command -v zoxide &> /dev/null; then
+  alias cd="zd"
+  zd() {
+    if [ $# -eq 0 ]; then
+      builtin cd ~ && return
+    elif [ -d "$1" ]; then
+      builtin cd "$1"
+    else
+      z "$@" && printf "\U000F17A9 " && pwd || echo "Error: Directory not found"
+    fi
+  }
+fi
 
-# Use case-sensitive completion.
-CASE_SENSITIVE="true"
+# Directories
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
-# Plugins
-plugins=(
-    macos
-    docker
-    terraform
-    git
-    z
-    colored-man-pages
-    aws
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    kubectl
-    golang
-    helm
-)
+# Tools
+alias d='docker'
+alias k='kubectl'
+alias g='git'
+n() { if [ "$#" -eq 0 ]; then nvim .; else nvim "$@"; fi; }
 
-source $ZSH/oh-my-zsh.sh
+# Kubectl completion
+if command -v kubectl >/dev/null 2>&1; then
+  # Ship kubectl's completion definitions into zsh
+  source <(kubectl completion zsh)
 
-# powerlevel10k config
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+  # Make alias `k` use kubectl completion instead of file completion
+  compdef __start_kubectl k
+fi
 
-# fzf config
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Plugins and enhancements ===============================================
 
-# vault auto completion
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/local/bin/vault vault
+# Autosuggestions
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# bash tldr auto completion
-complete -W "$(tldr 2>/dev/null --list)" tldr
+# zoxide
+eval "$(zoxide init zsh)"
 
-# Aliases
-alias g="git"
-alias k="kubectl"
+# starship
+eval "$(starship init zsh)"
 
-# direnv
-eval "$(direnv hook zsh)"
+# atuin shell integration
+. "$HOME/.atuin/bin/env"
+eval "$(atuin init zsh)"
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/jacob/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+# syntax highlighting
+source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# mise
+eval "$(/Users/jacob/.local/bin/mise activate zsh)"

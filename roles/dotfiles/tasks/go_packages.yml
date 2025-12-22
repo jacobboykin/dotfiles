@@ -1,0 +1,37 @@
+---
+- name: Check if go is installed
+  command: which go
+  register: go_check
+  changed_when: false
+  failed_when: false
+  become: no
+
+- name: Read Go packages from file
+  slurp:
+    src: "{{ dotfiles_dir }}/go-packages.txt"
+  register: go_packages_file
+  when: go_check.rc == 0
+
+- name: Parse Go packages (filter comments and empty lines)
+  set_fact:
+    go_packages: "{{ go_packages_file.content | b64decode | split('\n') | select('match', '^[^#]') | select('match', '.+') | map('trim') | list }}"
+  when: go_check.rc == 0
+
+- name: Install Go packages
+  become: no
+  shell: |
+    go install {{ item }}@latest 2>&1 | tee /tmp/go-install.log
+    if grep -q "copying" /tmp/go-install.log || grep -q "downloading" /tmp/go-install.log; then
+      echo "CHANGED"
+    fi
+  environment:
+    PATH: "{{ ansible_facts.env.PATH }}"
+    GOPATH: "{{ ansible_facts.env.GOPATH | default(ansible_facts.env.HOME + '/go') }}"
+  loop: "{{ go_packages | default([]) }}"
+  when: go_check.rc == 0 and go_packages | length > 0
+  register: go_install_result
+  changed_when: "'CHANGED' in go_install_result.stdout"
+  ignore_errors: yes
+  loop_control:
+    label: "{{ item }}"
+
