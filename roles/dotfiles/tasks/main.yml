@@ -3,6 +3,10 @@
   include_tasks: packages_darwin.yml
   when: ansible_facts['os_family'] == 'Darwin'
 
+- name: Include Arch Linux package tasks
+  include_tasks: packages_arch.yml
+  when: ansible_facts['os_family'] == 'Archlinux'
+
 - name: Install Mac App Store applications
   include_tasks: mas.yml
   when: ansible_facts['os_family'] == 'Darwin'

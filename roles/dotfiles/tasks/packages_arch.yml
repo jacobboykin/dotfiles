@@ -1,0 +1,144 @@
+---
+- name: Update pacman package database
+  community.general.pacman:
+    update_cache: yes
+  become: yes
+
+- name: Install base-devel group (required for AUR helpers)
+  community.general.pacman:
+    name: base-devel
+    state: present
+  become: yes
+
+- name: Check if yay is installed
+  command: which yay
+  register: yay_check
+  changed_when: false
+  failed_when: false
+
+- name: Install yay AUR helper
+  block:
+    - name: Create temporary directory for yay installation
+      tempfile:
+        state: directory
+        suffix: yay
+      register: yay_temp_dir
+
+    - name: Clone yay repository
+      git:
+        repo: https://aur.archlinux.org/yay.git
+        dest: "{{ yay_temp_dir.path }}/yay"
+        depth: 1
+
+    - name: Build and install yay
+      shell: |
+        cd {{ yay_temp_dir.path }}/yay
+        makepkg -si --noconfirm
+      args:
+        creates: /usr/bin/yay
+
+    - name: Clean up temporary directory
+      file:
+        path: "{{ yay_temp_dir.path }}"
+        state: absent
+  when: yay_check.rc != 0
+
+- name: Install essential packages via pacman
+  community.general.pacman:
+    name:
+      - git
+      - vim
+      - neovim
+      - fzf
+      - jq
+      - gnupg
+      - sed
+      - graphviz
+      - which
+      - nodejs
+      - npm
+      - wget
+      - curl
+      - unzip
+      - base-devel
+      - openssh
+      - go
+      - bat
+      - ripgrep
+      - fd
+      - btop
+      - dust
+      - procs
+      - tldr
+      - bind
+      - direnv
+    state: present
+  become: yes
+
+- name: Install CLI tools via yay
+  kewlfft.aur.aur:
+    use: yay
+    name:
+      - starship
+      - zoxide
+      - atuin
+      - eza
+      - yq-bin
+      - argocd-bin
+      - github-cli
+      - k9s-bin
+      - kubectl-bin
+      - kubectx
+      - helm
+      - kind-bin
+      - k3d-bin
+      - kustomize-bin
+      - terraform
+      - skopeo
+      - tilt-bin
+      - goreman
+      - lazygit
+      - tig
+      - thefuck
+    state: present
+  become: no
+  ignore_errors: yes  # Some packages might not be available
+
+- name: Install additional tools from AUR (optional)
+  kewlfft.aur.aur:
+    use: yay
+    name:
+      - buf-bin
+      - ytt-bin
+      - ctlptl-bin
+    state: present
+  become: no
+  ignore_errors: yes
+
+- name: Install GUI applications via yay (optional)
+  kewlfft.aur.aur:
+    use: yay
+    name:
+      - brave-bin
+      - firefox
+      - google-chrome
+      - discord
+      - slack-desktop
+      - spotify
+      - visual-studio-code-bin
+      - obsidian
+      - signal-desktop
+      - jetbrains-toolbox
+      - 1password
+      - ghostty-bin
+    state: present
+  become: no
+  ignore_errors: yes  # Some GUI apps might not be needed on all systems
+
+- name: Install pinentry for GPG (GTK version for Linux)
+  community.general.pacman:
+    name:
+      - pinentry
+    state: present
+  become: yes
+

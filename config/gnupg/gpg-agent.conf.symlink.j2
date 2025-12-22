@@ -1,0 +1,11 @@
+# Use platform-specific pinentry program
+{% if ansible_facts['os_family'] == 'Darwin' %}
+pinentry-program /opt/homebrew/bin/pinentry-mac
+{% else %}
+pinentry-program /usr/bin/pinentry
+{% endif %}
+
+# Cache settings
+default-cache-ttl 600
+max-cache-ttl 7200
+

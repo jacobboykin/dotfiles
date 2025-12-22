@@ -13,6 +13,10 @@
       include_tasks: roles/dotfiles/tasks/packages_darwin.yml
       when: ansible_facts['os_family'] == 'Darwin'
 
+    - name: Install Arch Linux packages
+      include_tasks: roles/dotfiles/tasks/packages_arch.yml
+      when: ansible_facts['os_family'] == 'Archlinux'
+
     - name: Install Mac App Store applications
       include_tasks: roles/dotfiles/tasks/mas.yml
       when: ansible_facts['os_family'] == 'Darwin'

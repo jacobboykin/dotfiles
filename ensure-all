@@ -10,8 +10,9 @@ if ! command -v ansible-playbook &> /dev/null; then
   echo "❌ >>> Ansible is not installed"
   echo ""
   echo "Install Ansible:"
-  echo "  macOS:   brew install ansible"
-  echo "  Python:  pipx install --include-deps ansible"
+  echo "  macOS:      brew install ansible"
+  echo "  Arch Linux: sudo pacman -S ansible"
+  echo "  Python:     pipx install --include-deps ansible"
   exit 1
 fi
 
@@ -19,9 +20,16 @@ fi
 echo "⏳ >>> Installing Ansible collections..."
 ansible-galaxy collection install -r requirements.yml
 
+# Detect if we need sudo password (Linux systems)
+EXTRA_ARGS="$@"
+if [[ "$OSTYPE" == "linux-gnu"* ]] && [[ ! "$EXTRA_ARGS" =~ "-K" ]] && [[ ! "$EXTRA_ARGS" =~ "--ask-become-pass" ]]; then
+  echo "🔐 >>> Note: You'll be prompted for your sudo password for package installation..."
+  EXTRA_ARGS="--ask-become-pass $EXTRA_ARGS"
+fi
+
 # Run software installation
 echo "⏳ >>> Installing software packages..."
-ansible-playbook -i localhost, -c local software.yml "$@"
+ansible-playbook -i localhost, -c local software.yml $EXTRA_ARGS
 
 # Run dotfiles setup
 echo "⏳ >>> Setting up dotfiles and zsh..."

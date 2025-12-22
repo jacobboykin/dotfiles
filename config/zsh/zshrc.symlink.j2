@@ -1,7 +1,7 @@
 # Zsh configuration file =================================================
 
 # Docker CLI completions need to be in fpath before compinit
-fpath=(/Users/{{ username }}/.docker/completions $fpath)
+fpath=({{ home_dir }}/.docker/completions $fpath)
 
 # Initialize zsh's completion system
 autoload -Uz compinit
@@ -57,6 +57,7 @@ alias ....='cd ../../..'
 alias d='docker'
 alias k='kubectl'
 alias g='git'
+alias lg='lazygit'
 n() { if [ "$#" -eq 0 ]; then nvim .; else nvim "$@"; fi; }
 
 # Kubectl completion
@@ -88,4 +89,4 @@ fi
 source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # mise
-eval "$(/Users/{{ username }}/.local/bin/mise activate zsh)"
+eval "$({{ home_dir }}/.local/bin/mise activate zsh)"

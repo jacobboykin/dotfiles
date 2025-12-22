@@ -7,6 +7,7 @@ config/git/gitconfig.symlink
 config/zsh/env.symlink
 config/zsh/zshrc.symlink
 config/iterm/profile.json
+config/gnupg/gpg-agent.conf.symlink
 
 # macos
 .DS_Store
