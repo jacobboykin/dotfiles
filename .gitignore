@@ -1,6 +1,7 @@
 # ignore files with sensitive info
 *-secret.symlink
 vars/secrets.yml
+dotfiles-secret
 
 # rendered templates with sensitive data (generated from .j2 files)
 config/git/gitconfig.symlink

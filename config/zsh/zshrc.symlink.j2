@@ -25,12 +25,15 @@ fi
 
 # Aliases and functions ==================================================
 
-# Load custom functions
-if [ -d ~/.zsh/functions ]; then
-  for func in ~/.zsh/functions/*; do
-    [ -f "$func" ] && source "$func"
-  done
-fi
+# Load custom functions (public + optional secret)
+for func_dir in ~/.zsh/functions ~/.zsh/functions.secret; do
+  if [[ -d "$func_dir" ]]; then
+    for func in "$func_dir"/*(N); do
+      [[ -f "$func" ]] && source "$func"
+    done
+  fi
+done
+unset func func_dir
 
 # File system
 if command -v eza &> /dev/null; then

@@ -13,6 +13,19 @@
     mode: '0755'
   become: no
 
+- name: Create .zsh/functions.secret directory
+  file:
+    path: "{{ home_dir }}/.zsh/functions.secret"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Remove legacy .zsh/functions.local directory
+  file:
+    path: "{{ home_dir }}/.zsh/functions.local"
+    state: absent
+  become: no
+
 - name: Find zsh functions
   find:
     paths: "{{ dotfiles_dir }}/config/zsh/functions"
@@ -28,6 +41,78 @@
     force: yes
   loop: "{{ zsh_functions.files }}"
   become: no
+
+- name: Remove legacy zsh function symlinks
+  file:
+    path: "{{ home_dir }}/.zsh/functions/{{ item }}"
+    state: absent
+  loop:
+    - get_kube_secret_and_decode
+  become: no
+
+- name: Set dotfiles secret directory (optional)
+  set_fact:
+    dotfiles_secret_dir_effective: "{{ dotfiles_secret_dir | default(home_dir ~ '/.dotfiles-secret') }}"
+  when:
+    - (dotfiles_secret_repo is defined and dotfiles_secret_repo | length > 0) or (dotfiles_secret_dir is defined and dotfiles_secret_dir | length > 0)
+
+- name: Check dotfiles secret repo has branches (optional)
+  command: git ls-remote --heads "{{ dotfiles_secret_repo }}"
+  register: dotfiles_secret_lsremote
+  changed_when: false
+  failed_when: false
+  become: no
+  when:
+    - dotfiles_secret_repo is defined
+    - dotfiles_secret_repo | length > 0
+
+- name: Set dotfiles secret repo ready flag (optional)
+  set_fact:
+    dotfiles_secret_repo_ready: "{{ (dotfiles_secret_lsremote.rc | default(1)) == 0 and (dotfiles_secret_lsremote.stdout | default('') | length > 0) }}"
+  when:
+    - dotfiles_secret_repo is defined
+    - dotfiles_secret_repo | length > 0
+
+- name: Clone dotfiles secret repo (optional)
+  become: no
+  git:
+    repo: "{{ dotfiles_secret_repo }}"
+    dest: "{{ dotfiles_secret_dir_effective }}"
+    update: yes
+  when:
+    - dotfiles_secret_repo is defined
+    - dotfiles_secret_repo | length > 0
+    - dotfiles_secret_repo_ready | default(false)
+
+- name: Check dotfiles secret zsh functions directory (optional)
+  stat:
+    path: "{{ dotfiles_secret_dir_effective }}/zsh/functions"
+  register: dotfiles_secret_functions_dir
+  when:
+    - dotfiles_secret_dir_effective is defined
+
+- name: Find secret zsh functions (optional)
+  find:
+    paths: "{{ dotfiles_secret_dir_effective }}/zsh/functions"
+    recurse: no
+    file_type: file
+  register: zsh_secret_functions
+  become: no
+  when:
+    - dotfiles_secret_dir_effective is defined
+    - dotfiles_secret_functions_dir.stat.isdir | default(false)
+
+- name: Symlink secret zsh functions (optional)
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ home_dir }}/.zsh/functions.secret/{{ item.path | basename }}"
+    state: link
+    force: yes
+  loop: "{{ zsh_secret_functions.files | default([]) }}"
+  become: no
+  when:
+    - dotfiles_secret_dir_effective is defined
+    - dotfiles_secret_functions_dir.stat.isdir | default(false)
 
 - name: Check if zsh-autosuggestions exists
   stat:
