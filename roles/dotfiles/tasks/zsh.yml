@@ -42,14 +42,6 @@
   loop: "{{ zsh_functions.files }}"
   become: no
 
-- name: Remove legacy zsh function symlinks
-  file:
-    path: "{{ home_dir }}/.zsh/functions/{{ item }}"
-    state: absent
-  loop:
-    - get_kube_secret_and_decode
-  become: no
-
 - name: Set dotfiles secret directory (optional)
   set_fact:
     dotfiles_secret_dir_effective: "{{ dotfiles_secret_dir | default(home_dir ~ '/.dotfiles-secret') }}"
