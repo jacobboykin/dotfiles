@@ -25,6 +25,13 @@ fi
 
 # Aliases and functions ==================================================
 
+# Load custom functions
+if [ -d ~/.zsh/functions ]; then
+  for func in ~/.zsh/functions/*; do
+    [ -f "$func" ] && source "$func"
+  done
+fi
+
 # File system
 if command -v eza &> /dev/null; then
   alias l='eza -lh --group-directories-first --icons=auto'

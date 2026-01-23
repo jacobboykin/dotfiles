@@ -6,6 +6,29 @@
     mode: '0755'
   become: no
 
+- name: Create .zsh/functions directory
+  file:
+    path: "{{ home_dir }}/.zsh/functions"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Find zsh functions
+  find:
+    paths: "{{ dotfiles_dir }}/config/zsh/functions"
+    recurse: no
+  register: zsh_functions
+  become: no
+
+- name: Symlink zsh functions
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ home_dir }}/.zsh/functions/{{ item.path | basename }}"
+    state: link
+    force: yes
+  loop: "{{ zsh_functions.files }}"
+  become: no
+
 - name: Check if zsh-autosuggestions exists
   stat:
     path: "{{ home_dir }}/.zsh/zsh-autosuggestions"
