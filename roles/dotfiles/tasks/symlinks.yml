@@ -20,6 +20,13 @@
     mode: '0700'
   become: no
 
+- name: Create .config/atuin directory
+  file:
+    path: "{{ home_dir }}/.config/atuin"
+    state: directory
+    mode: '0755'
+  become: no
+
 - name: Find all .symlink files
   find:
     paths: "{{ dotfiles_dir }}"
@@ -34,6 +41,8 @@
       {%- set filename = item.path | basename | regex_replace('\\.symlink$', '') -%}
       {%- if filename == 'starship.toml' -%}
         {{ home_dir }}/.config/{{ filename }}
+      {%- elif item.path | dirname | basename == 'atuin' -%}
+        {{ home_dir }}/.config/atuin/{{ filename }}
       {%- elif filename == 'env' and item.path | dirname | basename == 'zsh' -%}
         {{ home_dir }}/.zsh/{{ filename }}
       {%- elif item.path | dirname | basename == 'gnupg' -%}
@@ -53,6 +62,8 @@
       {%- set filename = item.item.path | basename | regex_replace('\\.symlink$', '') -%}
       {%- if filename == 'starship.toml' -%}
         {{ home_dir }}/.config/{{ filename }}
+      {%- elif item.item.path | dirname | basename == 'atuin' -%}
+        {{ home_dir }}/.config/atuin/{{ filename }}
       {%- elif filename == 'env' and item.item.path | dirname | basename == 'zsh' -%}
         {{ home_dir }}/.zsh/{{ filename }}
       {%- elif item.item.path | dirname | basename == 'gnupg' -%}
@@ -64,6 +75,8 @@
       {%- set filename = item.item.path | basename | regex_replace('\\.symlink$', '') -%}
       {%- if filename == 'starship.toml' -%}
         {{ home_dir }}/.config/{{ filename }}.backup-{{ lookup('pipe', 'date +%s') }}
+      {%- elif item.item.path | dirname | basename == 'atuin' -%}
+        {{ home_dir }}/.config/atuin/{{ filename }}.backup-{{ lookup('pipe', 'date +%s') }}
       {%- elif filename == 'env' and item.item.path | dirname | basename == 'zsh' -%}
         {{ home_dir }}/.zsh/{{ filename }}.backup-{{ lookup('pipe', 'date +%s') }}
       {%- elif item.item.path | dirname | basename == 'gnupg' -%}
@@ -87,6 +100,8 @@
       {%- set filename = item.path | basename | regex_replace('\\.symlink$', '') -%}
       {%- if filename == 'starship.toml' -%}
         {{ home_dir }}/.config/{{ filename }}
+      {%- elif item.path | dirname | basename == 'atuin' -%}
+        {{ home_dir }}/.config/atuin/{{ filename }}
       {%- elif filename == 'env' and item.path | dirname | basename == 'zsh' -%}
         {{ home_dir }}/.zsh/{{ filename }}
       {%- elif item.path | dirname | basename == 'gnupg' -%}

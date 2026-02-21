@@ -9,6 +9,7 @@ config/zsh/env.symlink
 config/zsh/zshrc.symlink
 config/iterm/profile.json
 config/gnupg/gpg-agent.conf.symlink
+config/atuin/config.toml.symlink
 
 # macos
 .DS_Store
