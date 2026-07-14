@@ -6,43 +6,6 @@
     mode: '0755'
   become: no
 
-- name: Set dotfiles secret directory for private skills (optional)
-  set_fact:
-    dotfiles_secret_dir_effective: "{{ dotfiles_secret_dir | default(home_dir ~ '/.dotfiles-secret') }}"
-  when:
-    - dotfiles_secret_dir_effective is not defined
-    - (dotfiles_secret_repo is defined and dotfiles_secret_repo | length > 0) or (dotfiles_secret_dir is defined and dotfiles_secret_dir | length > 0)
-
-- name: Check dotfiles secret repo has branches for private skills (optional)
-  command: git ls-remote --heads "{{ dotfiles_secret_repo }}"
-  register: agent_skills_secret_lsremote
-  changed_when: false
-  failed_when: false
-  become: no
-  when:
-    - dotfiles_secret_repo is defined
-    - dotfiles_secret_repo | length > 0
-    - dotfiles_secret_repo_ready is not defined
-
-- name: Set dotfiles secret repo ready flag for private skills (optional)
-  set_fact:
-    dotfiles_secret_repo_ready: "{{ (agent_skills_secret_lsremote.rc | default(1)) == 0 and (agent_skills_secret_lsremote.stdout | default('') | length > 0) }}"
-  when:
-    - dotfiles_secret_repo is defined
-    - dotfiles_secret_repo | length > 0
-    - dotfiles_secret_repo_ready is not defined
-
-- name: Clone dotfiles secret repo for private skills (optional)
-  become: no
-  git:
-    repo: "{{ dotfiles_secret_repo }}"
-    dest: "{{ dotfiles_secret_dir_effective }}"
-    update: yes
-  when:
-    - dotfiles_secret_repo is defined
-    - dotfiles_secret_repo | length > 0
-    - dotfiles_secret_repo_ready | default(false)
-
 - name: Check private agent skills directory (optional)
   stat:
     path: "{{ dotfiles_secret_dir_effective }}/agents/skills"

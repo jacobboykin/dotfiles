@@ -17,6 +17,9 @@
 - name: Process template files
   include_tasks: templates.yml
 
+- name: Setup private dotfiles checkout
+  include_tasks: dotfiles_secret.yml
+
 - name: Setup zsh plugins
   include_tasks: zsh.yml
 

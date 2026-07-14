@@ -116,6 +116,9 @@
     - name: Process template files
       include_tasks: roles/dotfiles/tasks/templates.yml
 
+    - name: Setup private dotfiles checkout
+      include_tasks: roles/dotfiles/tasks/dotfiles_secret.yml
+
     - name: Setup zsh plugins
       include_tasks: roles/dotfiles/tasks/zsh.yml
 
