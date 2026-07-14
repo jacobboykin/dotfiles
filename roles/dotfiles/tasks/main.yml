@@ -23,6 +23,11 @@
 - name: Setup symlinks
   include_tasks: symlinks.yml
 
+- name: Setup agent skills
+  include_tasks: agent_skills.yml
+
+- name: Setup Codex skills
+  include_tasks: codex_skills.yml
+
 - name: Install Go packages
   include_tasks: go_packages.yml
-

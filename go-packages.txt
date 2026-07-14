@@ -2,6 +2,7 @@
 # Or use: xargs -I {} go install {} < go-packages.txt
 
 github.com/spf13/cobra-cli
+github.com/ossianhempel/things3-cli/cmd/things
 github.com/daixiang0/gci
 mvdan.cc/gofumpt
 github.com/golangci/golangci-lint/v2/cmd/golangci-lint
@@ -14,5 +15,4 @@ github.com/akuity/grpc-gateway-client/protoc-gen-grpc-gateway-client
 github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
 honnef.co/go/tools/cmd/staticcheck
 golang.org/x/tools/cmd/stress
-
 

@@ -1,0 +1,36 @@
+---
+- name: Create Codex skills directory
+  file:
+    path: "{{ home_dir }}/.codex/skills"
+    state: directory
+    mode: '0755'
+  become: no
+
+- name: Check managed agent skills directory
+  stat:
+    path: "{{ home_dir }}/.agents/skills"
+    follow: yes
+  register: codex_agent_skills_dir
+  become: no
+
+- name: Find managed agent skills
+  find:
+    paths: "{{ home_dir }}/.agents/skills"
+    file_type: any
+    recurse: no
+    follow: yes
+  register: codex_agent_skill_sources
+  become: no
+  when:
+    - codex_agent_skills_dir.stat.isdir | default(false)
+
+- name: Link agent skills into Codex skills
+  file:
+    src: "{{ item.path }}"
+    dest: "{{ home_dir }}/.codex/skills/{{ item.path | basename }}"
+    state: link
+    force: yes
+  loop: "{{ codex_agent_skill_sources.files | default([]) }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+  become: no

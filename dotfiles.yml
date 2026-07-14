@@ -121,3 +121,9 @@
 
     - name: Setup symlinks
       include_tasks: roles/dotfiles/tasks/symlinks.yml
+
+    - name: Setup agent skills
+      include_tasks: roles/dotfiles/tasks/agent_skills.yml
+
+    - name: Setup Codex skills
+      include_tasks: roles/dotfiles/tasks/codex_skills.yml
