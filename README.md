@@ -1,7 +1,5 @@
 # dotfiles
 
-Personal dotfiles and software for macOS and arch, managed with Ansible.
+Personal dotfiles for macOS and Arch/CachyOS, managed with Ansible.
 
-- `./ensure-all` - Install everything (software + dotfiles)
-- `./ensure-software` - Install only software packages
-- `./ensure-dotfiles` - Install only dotfiles configuration
+- `./ensure-dotfiles` - Install dotfiles configuration

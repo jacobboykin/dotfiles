@@ -82,13 +82,19 @@ fi
 # Plugins and enhancements ===============================================
 
 # Autosuggestions
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ -f ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
 
 # zoxide
-eval "$(zoxide init zsh)"
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init zsh)"
+fi
 
 # starship
-eval "$(starship init zsh)"
+if command -v starship &> /dev/null; then
+  eval "$(starship init zsh)"
+fi
 
 # atuin shell integration
 if command -v atuin &> /dev/null; then
@@ -96,7 +102,11 @@ if command -v atuin &> /dev/null; then
 fi
 
 # syntax highlighting
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -f ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
 
 # mise
-eval "$({{ home_dir }}/.local/bin/mise activate zsh)"
+if command -v mise &> /dev/null; then
+  eval "$(mise activate zsh)"
+fi

@@ -1,8 +1,0 @@
-# Mac App Store applications
-# Install with: mas install <id>
-# Note: You must be signed in to the Mac App Store first
-# Run: mas signin your@email.com
-
-904280696  # Things 3
-973134470  # Be Focused Pro
-
